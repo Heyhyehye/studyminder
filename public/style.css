@@ -41,7 +41,6 @@ textarea {
 }
 
 .app-header,
-.notice,
 .layout {
   max-width: 1040px;
   margin-left: auto;
@@ -53,6 +52,7 @@ textarea {
   display: flex;
   align-items: center;
   gap: 14px;
+  margin-bottom: 26px;
 }
 
 .logo {
@@ -72,16 +72,6 @@ textarea {
   margin: 2px 0 0;
   color: var(--muted);
   font-size: 0.93rem;
-}
-
-.notice {
-  margin-top: 18px;
-  margin-bottom: 22px;
-  padding: 10px 16px;
-  background: var(--butter-soft);
-  border: 1px dashed #e3c26f;
-  border-radius: 12px;
-  font-size: 0.87rem;
 }
 
 /* 배치 */
