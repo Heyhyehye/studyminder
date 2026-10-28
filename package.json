@@ -1,0 +1,15 @@
+{
+  "name": "studyminder",
+  "version": "0.1.0",
+  "private": true,
+  "description": "과목별 복습 체크리스트",
+  "main": "server.js",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server.js",
+    "dev": "node --watch --env-file-if-exists=.env server.js"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.2.0",
+    "express": "^5.3.0"
+  }
+}

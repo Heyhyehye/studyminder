@@ -1,0 +1,12 @@
+# 패키지 (npm install로 다시 받을 수 있음)
+node_modules/
+
+# DB 접속정보 등 비밀 값: 절대 GitHub에 올리지 않는다
+.env
+.env.*
+!.env.example
+
+# 기타
+.DS_Store
+.vercel
+npm-debug.log*

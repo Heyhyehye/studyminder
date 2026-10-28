@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Studyminder</title>
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="app-header">
+    <img class="logo" src="logo.svg" alt="" width="52" height="52">
+    <div>
+      <h1>Studyminder</h1>
+      <p class="subtitle">과목별 복습 계획을 차곡차곡 적어 두는 나만의 공부 노트</p>
+    </div>
+  </header>
+
+  <p class="notice" role="note">
+    복습 기록은 <strong>데이터베이스(Neon)에 저장</strong>되어 새로고침하거나 다시 접속해도 그대로 남아 있어요. 복습 기록의 추가·조회, 완료 체크, 수정·삭제 결과가 모두 저장돼요.
+  </p>
+
+  <main class="layout">
+    <section class="card form-card" aria-labelledby="form-title">
+      <h2 id="form-title" class="card-title">
+        <svg class="title-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 20 L5.2 15.2 L15.8 4.6 a2 2 0 0 1 2.8 0 l0.8 0.8 a2 2 0 0 1 0 2.8 L8.8 18.8 Z" fill="#f6d88f" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M14.2 6.2 L17.8 9.8" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M4 20 L5.2 15.2 L8.8 18.8 Z" fill="#e9b7a8" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+        <span id="form-title-text">복습 계획 적기</span>
+      </h2>
+
+      <div id="edit-banner" class="edit-banner" role="status" hidden>
+        <p class="edit-banner-title">✎ 기록 수정 중</p>
+        <p id="edit-target" class="edit-target"></p>
+        <p class="edit-note">완료 여부는 그대로 유지돼요.</p>
+      </div>
+
+      <form id="review-form" novalidate>
+        <fieldset id="form-fields" class="form-fields">
+        <div class="field">
+          <label id="subject-label" for="new-subject">과목 <span class="required">*</span></label>
+          <div id="subject-select-wrap" hidden>
+            <select id="subject-select" name="subjectChoice"></select>
+          </div>
+          <div id="new-subject-wrap" class="new-subject">
+            <input type="text" id="new-subject" name="newSubject" maxlength="50" placeholder="새 과목 이름 (예: 자료구조)" aria-label="새 과목 이름">
+          </div>
+          <p id="subject-hint" class="hint">한 번 등록한 과목은 다음부터 선택 목록에서 고를 수 있어요.</p>
+        </div>
+
+        <div class="field">
+          <label for="content">복습할 내용 <span class="required">*</span></label>
+          <input type="text" id="content" name="content" maxlength="200" placeholder="예: 연결 리스트 삽입·삭제 다시 풀기">
+        </div>
+
+        <div class="field">
+          <label for="due-date">복습 예정일 <span class="required">*</span></label>
+          <input type="date" id="due-date" name="dueDate">
+        </div>
+
+        <div class="field">
+          <label for="memo">메모 <span class="optional">(선택)</span></label>
+          <textarea id="memo" name="memo" rows="3" maxlength="500" placeholder="참고할 페이지, 헷갈린 부분 등"></textarea>
+        </div>
+
+        </fieldset>
+
+        <p id="form-message" class="form-message" role="alert" aria-live="assertive"></p>
+
+        <button type="submit" id="submit-button" class="btn btn-primary" disabled>기록을 불러오는 중…</button>
+        <button type="button" id="cancel-edit" class="btn btn-soft btn-block" hidden>수정 취소</button>
+      </form>
+    </section>
+
+    <div class="right-column">
+      <section class="card calendar-card" aria-labelledby="calendar-title">
+        <span class="bookmark" aria-hidden="true"></span>
+        <div class="calendar-head">
+          <button type="button" id="prev-month" class="btn-icon" aria-label="이전 달">‹</button>
+          <h2 id="calendar-title" class="calendar-title" aria-live="polite"></h2>
+          <button type="button" id="next-month" class="btn-icon" aria-label="다음 달">›</button>
+        </div>
+        <div class="weekdays" aria-hidden="true">
+          <span class="sun">일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span class="sat">토</span>
+        </div>
+        <div id="calendar-grid" class="calendar-grid"></div>
+        <ul class="legend" aria-label="달력 표시 안내">
+          <li><span class="legend-mark mark-today"></span>오늘</li>
+          <li><span class="legend-mark mark-selected"></span>선택한 날짜</li>
+          <li><span class="legend-mark mark-items"></span>남은 복습 있음 (숫자: 미완료 수)</li>
+        </ul>
+      </section>
+
+      <section class="card list-card" aria-labelledby="list-title">
+        <span class="tape" aria-hidden="true"></span>
+        <div class="list-header">
+          <h2 id="list-title" class="card-title"></h2>
+          <span id="item-count" class="count"></span>
+          <button type="button" id="show-all" class="btn btn-soft">모든 날짜 보기</button>
+        </div>
+        <div class="list-toolbar">
+          <span id="status-label" class="toolbar-label">완료 상태</span>
+          <div id="status-filter" class="segmented" role="group" aria-labelledby="status-label">
+            <button type="button" class="segment" data-status="todo" aria-pressed="true">미완료</button>
+            <button type="button" class="segment" data-status="done" aria-pressed="false">완료</button>
+            <button type="button" class="segment" data-status="all" aria-pressed="false">전체</button>
+          </div>
+        </div>
+        <p id="list-message" class="list-message" role="status" tabindex="-1" hidden></p>
+
+        <div id="load-status" class="load-status" role="status" hidden>
+          <p id="load-status-text"></p>
+          <button type="button" id="retry-button" class="btn btn-soft" hidden>다시 불러오기</button>
+        </div>
+        <p id="empty-message" class="empty" hidden></p>
+        <ul id="review-list" class="review-list"></ul>
+      </section>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
